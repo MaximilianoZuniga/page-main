@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Regalos - Maribel birthday's</title>
+    <style>
+        :root {
+            --grinch-green: #018E40;
+            --grinch-red: #8B011A;
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        body {
+            font-family: sans-serif; margin: 0; padding: 20px; text-align: center;
+            background-image: url('blob_ynwy.jpg'); 
+            background-size: cover; background-attachment: fixed;
+        }
+        .container { max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        h1 { color: var(--grinch-red); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; }
+        th { background-color: var(--grinch-green); color: white; }
+        td button { margin: 2px; padding: 5px 10px; cursor: pointer; border: none; border-radius: 4px; }
+        .btn-delete { background-color: #dc3545; color: white; }
+        .btn-toggle { background-color: #ffc107; color: black; }
+        .reserved-status { font-weight: bold; }
+        .status-yes { color: var(--grinch-red); }
+        .status-no { color: var(--grinch-green); }
+        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Editar y Gestionar Regalos</h1>
+        <a href="admin.html" class="back-link">Volver a la administración</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Imagen</th>
+                    <th>Link (URL)</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="gift-table-body">
+                <!-- Filas de regalos dinámicas -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // *** Apunta a la URL de tu servidor Node.js ***
+        const API_URL = 'http://localhost:3000/api/gifts';
+
+        async function fetchGiftsFromServer() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Network response was not ok');
+                return await response.json();
+            } catch (error) {
+                console.error("Error fetching gifts:", error);
+                alert("No se pudieron cargar los regalos desde el servidor.");
+                return [];
+            }
+        }
+
+        async function renderEditableList() {
+            const tableBody = document.getElementById('gift-table-body');
+            tableBody.innerHTML = '<tr><td colspan="5">Cargando datos...</td></tr>';
+            
+            const gifts = await fetchGiftsFromServer();
+
+            tableBody.innerHTML = '';
+            gifts.forEach(gift => {
+                const row = document.createElement('tr');
+                const statusClass = gift.reserved ? 'status-yes' : 'status-no';
+                const statusText = gift.reserved ? 'Reservado' : 'Disponible';
+                const toggleButtonText = gift.reserved ? 'Habilitar' : 'Reservar';
+                const imageUrl = (gift.image && gift.image.trim() !== '') ? gift.image : 'placeholder_gift.jpg';
+
+                row.innerHTML = `
+                    <td>${gift.name}</td>
+                    <td><img src="${imageUrl}" style="width: 50px; height: auto;"></td>
+                    <td><a href="${gift.link}" target="_blank">Ver Enlace</a></td>
+                    <td class="reserved-status ${statusClass}">${statusText}</td>
+                    <td>
+                        <button class="btn-toggle" onclick="toggleReservedStatus(${gift.id})">${toggleButtonText}</button>
+                        <button class="btn-delete" onclick="deleteGift(${gift.id})">Eliminar</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Función toggleReservedStatus actualizada (PUT request)
+        async function toggleReservedStatus(giftId) {
+            const gifts = await fetchGiftsFromServer();
+            const gift = gifts.find(g => g.id === giftId);
+            const newState = !gift.reserved;
+
+            try {
+                const response = await fetch(`${API_URL}/${giftId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reserved: newState })
+                });
+
+                if (response.ok) {
+                    alert("Estado de reserva actualizado con éxito.");
+                    renderEditableList(); // Refrescar la tabla
+                } else {
+                    throw new Error('Server error');
+                }
+            } catch (error) {
+                console.error("Error updating status:", error);
+                alert("Hubo un problema al actualizar el estado del regalo.");
+            }
+        }
+
+        // Función deleteGift actualizada (DELETE request)
+        async function deleteGift(giftId) {
+            if (confirm("¿Seguro que quieres eliminar este regalo de la lista PERMANENTEMENTE?")) {
+                try {
+                    const response = await fetch(`${API_URL}/${giftId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        alert("Regalo eliminado con éxito.");
+                        renderEditableList(); // Refrescar la tabla
+                    } else {
+                        throw new Error('Server error');
+                    }
+                } catch (error) {
+                    console.error("Error deleting gift:", error);
+                    alert("Hubo un problema al eliminar el regalo.");
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderEditableList);
+    </script>
+</body>
+</html>

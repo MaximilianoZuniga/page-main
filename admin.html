@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Maribel birthday's</title>
+    <style>
+        :root {
+            --grinch-red: #8B011A;
+            --grinch-green: #018E40;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+        body {
+            font-family: sans-serif;
+            margin: 0; padding: 20px; text-align: center;
+            background-image: url('desktop-wallpaper-dr-seuss-the-grinch-mr-grinch.jpg'); 
+            background-size: cover; background-attachment: fixed;
+            color: #333;
+        }
+        .container { max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        h1, h3 { color: var(--grinch-red); }
+        input, button { padding: 10px; margin-top: 10px; width: 100%; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc; }
+        button { background-color: var(--grinch-green); color: white; border: none; cursor: pointer; transition: background-color 0.3s; }
+        button:hover { background-color: #00642d; }
+        .link-to-user { margin-top: 20px; display: block; color: var(--grinch-red); text-decoration: none; font-weight: bold; }
+        .scrape-btn { background-color: #f0ad4e; }
+        .scrape-btn:hover { background-color: #ec971f; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin: Maribel birthday's</h1>
+        <h3>Añadir Nuevo Regalo</h3>
+        <input type="text" id="new-gift-name" placeholder="Nombre del regalo">
+        <input type="url" id="new-gift-link" placeholder="Link del regalo (URL del producto)">
+        
+        <button onclick="fetchImageFromLink()" class="scrape-btn">Obtener Imagen Automáticamente (Scraping)</button>
+        <input type="url" id="new-gift-image" placeholder="Link de la imagen (URL miniatura)" disabled>
+
+        <button onclick="addGift()">Añadir Regalo</button>
+        <a href="user.html" class="link-to-user">Ver lista pública de regalos</a>
+        <a href="edit.html" class="link-to-user">**Gestionar y Editar Regalos**</a>
+
+        <!-- Se eliminó la funcionalidad de JSON local/localStorage -->
+        
+    </div>
+
+    <script>
+        // *** Apunta a la URL de tu servidor Node.js ***
+        const API_URL = 'http://localhost:3000/api/gifts'; 
+
+        // Función de Scraping (igual que antes, usa proxy público)
+        async function fetchImageFromLink() {
+            const productLink = document.getElementById('new-gift-link').value.trim();
+            if (!productLink) {
+                alert("Por favor, introduce el link del regalo primero.");
+                return;
+            }
+
+            const proxy = 'api.allorigins.win';
+            const targetUrl = encodeURIComponent(productLink);
+            const fullUrl = proxy + targetUrl;
+
+            try {
+                const response = await fetch(fullUrl);
+                const data = await response.json();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.contents, 'text/html');
+
+                let imageUrl = '';
+                const ogImage = doc.querySelector('meta');
+                if (ogImage && ogImage.content) {
+                    imageUrl = ogImage.content;
+                }
+
+                if (imageUrl) {
+                    document.getElementById('new-gift-image').value = imageUrl;
+                    alert("Imagen encontrada automáticamente.");
+                    document.getElementById('new-gift-image').disabled = false; // Habilita para permitir ajustes
+                } else {
+                    alert("No se pudo encontrar la imagen automáticamente. Pégala manualmente.");
+                    document.getElementById('new-gift-image').disabled = false;
+                }
+
+            } catch (error) {
+                console.error("Error fetching the product link:", error);
+                alert("Error de red o CORS al intentar obtener la imagen. Habilita el campo y pégala manualmente.");
+                document.getElementById('new-gift-image').disabled = false;
+            }
+        }
+
+
+        // Función para añadir regalo (POST al servidor)
+        async function addGift() {
+            const name = document.getElementById('new-gift-name').value.trim();
+            const link = document.getElementById('new-gift-link').value.trim();
+            const image = document.getElementById('new-gift-image').value.trim();
+            
+            if (name && link) {
+                const newGift = { 
+                    id: Date.now(),
+                    name, 
+                    link, 
+                    image, 
+                    reserved: false 
+                };
+                
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newGift)
+                    });
+
+                    if (response.ok) {
+                        alert(`"${name}" añadido al servidor.`);
+                        document.getElementById('new-gift-name').value = '';
+                        document.getElementById('new-gift-link').value = '';
+                        document.getElementById('new-gift-image').value = ''; 
+                        document.getElementById('new-gift-image').disabled = true;
+                    } else {
+                        throw new Error('Server error');
+                    }
+                } catch (error) {
+                    console.error("Error adding gift:", error);
+                    alert("Hubo un problema al añadir el regalo al servidor. ¿Está el backend corriendo?");
+                }
+            } else { alert("Completa los campos obligatorios."); }
+        }
+    </script>
+</body>
+</html>
