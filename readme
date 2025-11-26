@@ -1,0 +1,86 @@
+Lista de Regalos de Cumpleaños de Maribel (Proyecto Full-Stack Local)
+Este proyecto es una aplicación web diseñada para gestionar una lista de deseos de cumpleaños. Permite a los usuarios ver los regalos disponibles, reservarlos, y a un administrador añadir, editar y eliminar elementos de la lista.
+Utiliza una arquitectura simple: un frontend basado en HTML, CSS y JavaScript, y un backend ligero con Node.js y Express que gestiona los datos almacenados en un archivo JSON local.
+Características
+Vista Pública (user.html): Los invitados pueden ver los regalos disponibles, ver el enlace del producto y reservarlo. Muestra un mensaje explícito si un regalo ya está reservado.
+Panel de Administración (admin.html): Permite añadir nuevos regalos (nombre, enlace y URL de imagen). Incluye una función experimental de scraping para intentar obtener la imagen automáticamente desde el enlace del producto.
+Gestión de Regalos (edit.html): Una interfaz de tabla para que el administrador gestione el estado de los regalos (reservado/disponible), edite detalles o los elimine permanentemente.
+Backend con Node.js: Gestión centralizada de datos en data.json, permitiendo que múltiples usuarios sincronicen la información.
+Prerrequisitos
+Necesitas tener Node.js instalado en tu sistema para ejecutar el servidor backend.
+Puedes verificar si lo tienes instalado ejecutando esto en tu terminal:
+bash
+node -v
+npm -v
+Usa el código con precaución.
+
+Instalación y Configuración
+Sigue estos pasos para poner el proyecto en marcha:
+1. Estructura de Archivos
+Organiza tus archivos en la siguiente estructura de carpetas:
+/lista-regalos/
+├── user.html
+├── admin.html
+├── edit.html
+├── data.json
+├── server.js
+└── package.json
+Asegúrate de que tus archivos HTML y JS contengan el código proporcionado en las respuestas anteriores, especialmente la línea que define la URL de la API:
+javascript
+const API_URL = 'http://localhost:3000/api/gifts'; 
+Usa el código con precaución.
+
+2. Archivos de Configuración del Backend
+Crea package.json y data.json:
+package.json
+json
+{
+  "name": "lista-regalos-backend",
+  "version": "1.0.0",
+  "description": "Backend para la lista de regalos de Maribel",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
+Usa el código con precaución.
+
+data.json
+json
+[]
+Usa el código con precaución.
+
+3. Archivo server.js
+Crea el archivo server.js con el siguiente código:
+javascript
+const express = require('express');
+const fs = require('fs');
+// ... (copia el resto del contenido de server.js de la respuesta anterior) ...
+// Asegúrate de incluir todas las rutas GET, POST, PUT, DELETE
+Usa el código con precaución.
+
+4. Instalar Dependencias
+Abre tu terminal, navega hasta la carpeta /lista-regalos/ y ejecuta el comando de instalación:
+bash
+npm install
+Usa el código con precaución.
+
+Uso
+Iniciar el Servidor
+Desde la carpeta principal del proyecto, ejecuta:
+bash
+npm start
+Usa el código con precaución.
+
+El servidor se iniciará y deberías ver los siguientes mensajes en tu terminal:
+Servidor Node.js escuchando en http://localhost:3000
+Visita la lista de usuarios en http://localhost:3000/user.html
+Visita el panel de admin en http://localhost:3000/admin.html
+Acceso a la Aplicación
+Vista Pública: Abre http://localhost:3000/user.html en cualquier navegador para ver y reservar regalos.
+Panel de Administración: Abre http://localhost:3000/admin.html para añadir nuevos regalos o ir a la gestión de los mismos.
+Los datos se guardarán automáticamente en el archivo local data.json y se sincronizarán en tiempo real para todos los usuarios.
