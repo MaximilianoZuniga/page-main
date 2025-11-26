@@ -1,4 +1,4 @@
-Lista de Regalos de Cumpleaños de Maribel (Proyecto Full-Stack Local)
+Lista de Regalos de Cumpleaños de  (Proyecto Full-Stack Local)
 Este proyecto es una aplicación web diseñada para gestionar una lista de deseos de cumpleaños. Permite a los usuarios ver los regalos disponibles, reservarlos, y a un administrador añadir, editar y eliminar elementos de la lista.
 Utiliza una arquitectura simple: un frontend basado en HTML, CSS y JavaScript, y un backend ligero con Node.js y Express que gestiona los datos almacenados en un archivo JSON local.
 Características
