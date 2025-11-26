@@ -6,162 +6,73 @@
     <title>Admin - Maribel birthday's</title>
     <style>
         :root {
-            --grinch-red: #8B011A;
-            --grinch-green: #018E40;
-            --card-bg: rgba(255, 255, 255, 0.96);
-            --shadow: 0 8px 25px rgba(0,0,0,0.15);
+            --red: #8B011A;
+            --green: #018E40;
+            --bg: rgba(255,255,255,0.96);
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-image: url('desktop-wallpaper-dr-seuss-the-grinch-mr-grinch.jpg');
-            background-size: cover;
-            background-attachment: fixed;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0; padding: 20px;
+            background: url('desktop-wallpaper-dr-seuss-the-grinch-mr-grinch.jpg') center/cover fixed;
             min-height: 100vh;
-            color: #333;
         }
         .container {
-            max-width: 700px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
+            max-width: 600px; margin: 0 auto;
+            background: var(--bg); padding: 30px;
+            border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        h1 {
-            color: var(--grinch-red);
-            font-size: 2.4em;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        h3 {
-            color: var(--grinch-green);
-            text-align: center;
-            margin-top: 25px;
-            font-size: 1.4em;
-        }
+        h1 { color: var(--red); text-align: center; font-size: 2.4em; }
+        h3 { color: var(--green); text-align: center; margin: 25px 0 15px; }
         input, button {
-            width: 100%;
-            padding: 14px;
-            margin: 12px 0;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            font-size: 1em;
-            box-sizing: border-box;
-        }
-        input:focus {
-            outline: none;
-            border-color: var(--grinch-green);
-            box-shadow: 0 0 0 3px rgba(1, 142, 64, 0.2);
+            width: 100%; padding: 14px; margin: 10px 0;
+            border-radius: 10px; border: 1px solid #ddd;
+            font-size: 1.1em; box-sizing: border-box;
         }
         button {
-            background: var(--grinch-green);
-            color: white;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
+            background: var(--green); color: white;
+            font-weight: bold; border: none; cursor: pointer;
             transition: 0.3s;
         }
         button:hover { background: #00642d; transform: translateY(-2px); }
-        .scrape-btn {
-            background: #f0ad4e;
-        }
-        .scrape-btn:hover { background: #e69500; }
-        .links {
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
         .links a {
-            padding: 14px;
-            background: var(--grinch-red);
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 10px;
-            text-align: center;
-            transition: 0.3s;
+            display: block; margin: 15px 0; padding: 14px;
+            background: var(--red); color: white; text-align: center;
+            text-decoration: none; font-weight: bold;
+            border-radius: 10px; transition: 0.3s;
         }
-        .links a:hover {
-            background: #6b0015;
-            transform: translateY(-3px);
-        }
-
-        @media (max-width: 480px) {
-            .container { padding: 20px; }
-            h1 { font-size: 2em; }
-        }
+        .links a:hover { background: #5f0014; }
+        @media (max-width: 480px) { .container { padding: 20px; } }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Admin - Maribel birthday's</h1>
-        <h3>Añadir Nuevo Regalo</h3>
-        
-        <input type="text" id="new-gift-name" placeholder="Nombre del regalo">
-        <input type="url" id="new-gift-link" placeholder="Link del producto (Amazon, Mercado Libre, etc.)">
-        
-        <button onclick="fetchImageFromLink()" class="scrape-btn">
-            Obtener Imagen Automática
-        </button>
-        
-        <input type="url" id="new-gift-image" placeholder="URL de la imagen (se llena sola o pégala)" disabled>
-        
+        <h3>Agregar nuevo regalo</h3>
+
+        <input type="text" id="name" placeholder="Nombre del regalo" required>
+        <input type="url" id="image" placeholder="URL de la foto (puede ser de WhatsApp, Instagram, etc.)" required>
+
         <button onclick="addGift()">Añadir Regalo</button>
 
         <div class="links">
             <a href="user.html">Ver Lista Pública</a>
-            <a href="edit.html">Gestionar y Editar Regalos</a>
+            <a href="edit.html">Gestionar Regalos</a>
         </div>
     </div>
 
     <script>
         const API_URL = 'https://page-main.onrender.com/api/gifts';
 
-        async function fetchImageFromLink() {
-            const link = document.getElementById('new-gift-link').value.trim();
-            if (!link) return alert("Primero poné el link del producto");
-
-            const proxy = 'https://api.allorigins.win/get?url=';
-            try {
-                const res = await fetch(proxy + encodeURIComponent(link));
-                const data = await res.json();
-                const doc = new DOMParser().parseFromString(data.contents, 'text/html');
-                let img = doc.querySelector('meta[property="og:image"]')?.content ||
-                          doc.querySelector('meta[name="og:image"]')?.content ||
-                          doc.querySelector('img')?.src;
-
-                if (img) {
-                    if (img.startsWith('//')) img = 'https:' + img;
-                    if (img.startsWith('/')) img = new URL(img, link).href;
-                    
-                    document.getElementById('new-gift-image').value = img;
-                    document.getElementById('new-gift-image').disabled = false;
-                    alert("¡Imagen encontrada!");
-                } else {
-                    alert("No se encontró imagen automática. Pegala manualmente.");
-                    document.getElementById('new-gift-image').disabled = false;
-                }
-            } catch (e) {
-                alert("Error de red. Pegá la imagen manualmente.");
-                document.getElementById('new-gift-image').disabled = false;
-            }
-        }
-
         async function addGift() {
-            const name = document.getElementById('new-gift-name').value.trim();
-            const link = document.getElementById('new-gift-link').value.trim();
-            const image = document.getElementById('new-gift-image').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const image = document.getElementById('image').value.trim();
 
-            if (!name || !link) return alert("Nombre y link son obligatorios");
+            if (!name || !image) return alert("Completa nombre e imagen");
 
-            const newGift = {
+            const gift = {
                 id: Date.now(),
                 name,
-                link,
-                image: image || '',
+                image,
                 reserved: false
             };
 
@@ -169,15 +80,18 @@
                 const res = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newGift)
+                    body: JSON.stringify(gift)
                 });
+
                 if (res.ok) {
-                    alert(`"${name}" añadido con éxito`);
-                    document.querySelectorAll('input').forEach(i => i.value = '');
-                    document.getElementById('new-gift-image').disabled = true;
+                    alert(`"${name}" agregado con éxito`);
+                    document.getElementById('name').value = '';
+                    document.getElementById('image').value = '';
+                } else {
+                    alert("Error al guardar");
                 }
             } catch (e) {
-                alert("Error al guardar en el servidor");
+                alert("Error de conexión");
             }
         }
     </script>

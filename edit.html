@@ -3,103 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Regalos - Maribel birthday's</title>
+    <title>Gestionar - Maribel birthday's</title>
     <style>
-        :root {
-            --grinch-red: #8B011A;
-            --grinch-green: #018E40;
-            --card-bg: rgba(255, 255, 255, 0.96);
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0; padding: 20px;
-            background-image: url('blob_ynwy.jpg');
-            background-size: cover;
-            background-attachment: fixed;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-        }
-        h1 {
-            color: var(--grinch-red);
-            text-align: center;
-            font-size: 2.4em;
-            margin-bottom: 10px;
-        }
-        .back-link {
-            display: block;
-            text-align: center;
-            margin: 20px 0;
-            color: var(--grinch-green);
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 1.1em;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        th {
-            background: var(--grinch-green);
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
-        td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-        }
-        td img {
-            max-width: 60px;
-            max-height: 60px;
-            border-radius: 8px;
-            object-fit: contain;
-        }
-        .btn {
-            padding: 8px 12px;
-            margin: 0 4px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .btn-toggle {
-            background: #ffc107;
-            color: black;
-        }
-        .btn-delete {
-            background: #dc3545;
-            color: white;
-        }
-        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
-        .reserved { color: var(--grinch-red); font-weight: bold; }
-        .available { color: var(--grinch-green); font-weight: bold; }
+        :root { --red: #8B011A; --green: #018E40; --bg: rgba(255,255,255,0.96); }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px;
+               background: url('blob_ynwy.jpg') center/cover fixed; min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; background: var(--bg);
+                     padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        h1 { color: var(--red); text-align: center; margin-bottom: 10px; }
+        .back { display: block; text-align: center; margin: 20px 0; color: var(--green); 
+                font-weight: bold; font-size: 1.1em; text-decoration: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px;
+                background: white; border-radius: 12px; overflow: hidden; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        th { background: var(--green); color: white; padding: 15px; text-align: center; }
+        td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; }
+        td img { max-width: 70px; max-height: 70px; border-radius: 8px; object-fit: contain; }
+        .btn { padding: 8px 14px; margin: 0 5px; border: none; border-radius: 8px;
+               cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.95em; }
+        .toggle { background: #ffc107; color: black; }
+        .toggle:hover { background: #e0a800; }
+        .del { background: #dc3545; color: white; }
+        .del:hover { background: #c82333; }
+        .status { font-weight: bold; }
+        .reserved { color: var(--red); }
+        .available { color: var(--green); }
 
-        /* Responsivo para móviles */
+        /* Responsivo móvil */
         @media (max-width: 768px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
+            table, thead, tbody, th, td, tr { display: block; }
             thead tr { display: none; }
-            tr {
-                margin-bottom: 20px;
-                border: 1px solid #ddd;
-                border-radius: 12px;
-                padding: 15px;
-                background: #f9f9f9;
+            tr { 
+                margin: 15px 0; padding: 15px; background: #f9f9f9; 
+                border-radius: 12px; border: 1px solid #eee;
             }
             td {
                 text-align: right;
@@ -112,58 +48,57 @@
                 position: absolute;
                 left: 15px;
                 font-weight: bold;
-                color: var(--grinch-green);
+                color: var(--green);
+                text-align: left;
+                width: 45%;
             }
             td:last-child { text-align: center; }
+            .btn { display: block; width: 90%; margin: 8px auto; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Gestionar Regalos</h1>
-        <a href="admin.html" class="back-link">Volver al Panel Admin</a>
+        <a href="admin.html" class="back">Volver al Admin</a>
 
-        <table id="gifts-table">
+        <table>
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Imagen</th>
+                    <th>Foto</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody id="gift-table-body">
-                <!-- Cargando... -->
-            </tbody>
+            <tbody id="body"></tbody>
         </table>
     </div>
 
     <script>
         const API_URL = 'https://page-main.onrender.com/api/gifts';
+        const tbody = document.getElementById('body');
 
-        async function loadGifts() {
-            const tbody = document.getElementById('gift-table-body');
+        async function load() {
             tbody.innerHTML = '<tr><td colspan="4">Cargando regalos...</td></tr>';
-            
             try {
-                const res = await fetch(API_URL);
-                const gifts = await res.json();
-
+                const gifts = await (await fetch(API_URL)).json();
                 tbody.innerHTML = '';
+
                 gifts.forEach(g => {
                     const img = g.image?.trim() ? g.image : 'placeholder_gift.jpg';
-                    const status = g.reserved ? 'reserved' : 'available';
-                    const text = g.reserved ? 'Reservado' : 'Disponible';
-                    const btnText = g.reserved ? 'Desmarcar' : 'Marcar Reservado';
+                    const statusText = g.reserved ? 'Reservado' : 'Disponible';
+                    const statusClass = g.reserved ? 'reserved' : 'available';
+                    const toggleText = g.reserved ? 'Desmarcar' : 'Marcar reservado';
 
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td data-label="Nombre">${g.name}</td>
-                        <td data-label="Imagen"><img src="${img}" onerror="this.src='placeholder_gift.jpg'"></td>
-                        <td data-label="Estado" class="${status}">${text}</td>
+                        <td data-label="Foto"><img src="${img}" onerror="this.src='placeholder_gift.jpg'"></td>
+                        <td data-label="Estado" class="status ${statusClass}">${statusText}</td>
                         <td data-label="Acciones">
-                            <button class="btn btn-toggle" onclick="toggle(${g.id})">${btnText}</button>
-                            <button class="btn btn-delete" onclick="remove(${g.id})">Eliminar</button>
+                            <button class="btn toggle" onclick="toggle(${g.id}, ${g.reserved})">${toggleText}</button>
+                            <button class="btn del" onclick="del(${g.id})">Eliminar</button>
                         </td>
                     `;
                     tbody.appendChild(row);
@@ -173,25 +108,24 @@
             }
         }
 
-        async function toggle(id) {
-            const gifts = await (await fetch(API_URL)).json();
-            const gift = gifts.find(g => g.id === id);
+        async function toggle(id, currentState) {
+            const newState = !currentState;
             await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ reserved: !gift.reserved })
+                body: JSON.stringify({ reserved: newState })
             });
-            loadGifts();
+            load();
         }
 
-        async function remove(id) {
+        async function del(id) {
             if (confirm("¿Eliminar este regalo para siempre?")) {
                 await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-                loadGifts();
+                load();
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadGifts);
+        load();
     </script>
 </body>
 </html>

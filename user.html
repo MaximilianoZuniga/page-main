@@ -3,213 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Regalos - Maribel birthday's</title>
+    <title>Maribel birthday's - Regalos</title>
     <style>
-        :root {
-            --grinch-green: #018E40;
-            --grinch-red: #8B011A;
-            --card-bg: rgba(255, 255, 255, 0.95);
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-            background-image: url('a.jpg');
-            background-size: cover;
-            background-attachment: fixed;
-            color: #333;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: var(--grinch-red);
-            font-size: 2.8em;
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
-        }
-        .gift-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 24px;
-            padding: 10px;
-        }
-        .gift-item {
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        .gift-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
-        }
-        .reserved-item {
-            opacity: 0.85;
-            background: #ffcccb99 !important;
-        }
-        .gift-image-container {
-            width: 100%;
-            height: 200px;
-            background: #f8f8f8;
-            padding: 10px;
-            cursor: pointer;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .gift-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            transition: transform 0.3s;
-        }
-        .gift-image:hover {
-            transform: scale(1.08);
-        }
-        .gift-content {
-            padding: 16px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .gift-name {
-            font-weight: bold;
-            color: var(--grinch-red);
-            font-size: 1.25em;
-            margin-bottom: 12px;
-            flex-grow: 1;
-        }
-        .gift-buttons {
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .gift-buttons button {
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .view-btn {
-            background-color: #007bff;
-            color: white;
-        }
-        .view-btn:hover { background-color: #0056b3; }
-        .reserve-btn {
-            background-color: var(--grinch-green);
-            color: white;
-        }
-        .reserve-btn:hover { background-color: #00642d; }
-        .reserved-message {
-            background: #ffe5e5;
-            color: var(--grinch-red);
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        /* Responsivo extra para móviles */
-        @media (max-width: 480px) {
-            h1 { font-size: 2.2em; }
-            .gift-list { grid-template-columns: 1fr; }
-            .gift-image-container { height: 180px; }
-        }
+        :root { --red: #8B011A; --green: #018E40; --bg: rgba(255,255,255,0.95); }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px;
+               background: url('a.jpg') center/cover fixed; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: var(--red); font-size: 2.8em; background: var(--bg); padding: 15px;
+             border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 24px; padding: 20px 0; }
+        .card { background: var(--bg); border-radius: 16px; overflow: hidden;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.15); transition: 0.3s; text-align: center; }
+        .card:hover { transform: translateY(-10px); }
+        .card.reserved { opacity: 0.8; background: #ffcccb !important; }
+        .img-box { height: 220px; padding: 15px; background: #f8f8f8; }
+        .img-box img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; }
+        .content { padding: 20px; }
+        .name { font-weight: bold; color: var(--red); font-size: 1.3em; margin-bottom: 15px; }
+        .btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: bold;
+               cursor: pointer; width: 100%; font-size: 1.1em; }
+        .reserve { background: var(--green); color: white; }
+        .reserve:hover { background: #00642d; }
+        .msg { background: #ffe5e5; color: var(--red); padding: 15px; border-radius: 10px; font-weight: bold; }
+        @media (max-width: 480px) { h1 { font-size: 2.2em; } }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Maribel birthday's</h1>
-        <div class="gift-list" id="gift-list"></div>
+        <div class="grid" id="list"></div>
     </div>
 
     <script>
         const API_URL = 'https://page-main.onrender.com/api/gifts';
+        const list = document.getElementById('list');
 
-        async function fetchGifts() {
-            try {
-                const res = await fetch(API_URL);
-                if (!res.ok) throw new Error('Error del servidor');
-                return await res.json();
-            } catch (err) {
-                console.error(err);
-                alert("No se pudieron cargar los regalos.");
-                return [];
-            }
-        }
-
-        function viewGift(link) {
-            const url = link.startsWith('http') ? link : 'https://' + link;
-            window.open(url, '_blank').focus();
-        }
-
-        async function reserveGift(id) {
-            try {
-                const res = await fetch(`${API_URL}/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ reserved: true })
-                });
-
-                if (res.status === 409) {
-                    alert("¡Ups! Alguien más lo reservó justo ahora :P");
-                } else if (res.ok) {
-                    alert("¡Reservado con éxito! Gracias ♡");
-                }
-                renderGifts(); // refrescar
-            } catch (err) {
-                alert("Error de conexión. Inténtalo de nuevo.");
-                renderGifts();
-            }
-        }
-
-        async function renderGifts() {
-            const list = document.getElementById('gift-list');
-            list.innerHTML = '<p>Cargando regalitos...</p>';
-            const gifts = await fetchGifts();
+        async function load() {
+            list.innerHTML = '<p style="grid-column: 1/-1; text-align:center; font-size:1.5em;">Cargando regalitos...</p>';
+            const gifts = await (await fetch(API_URL)).json();
             list.innerHTML = '';
 
-            gifts.forEach(gift => {
-                const div = document.createElement('div');
-                div.className = 'gift-item' + (gift.reserved ? ' reserved-item' : '');
+            gifts.forEach(g => {
+                const card = document.createElement('div');
+                card.className = 'card' + (g.reserved ? ' reserved' : '');
+                const img = g.image?.trim() ? g.image : 'placeholder_gift.jpg';
 
-                const img = gift.image?.trim() ? gift.image : 'placeholder_gift.jpg';
-
-                const actionHTML = gift.reserved
-                    ? `<div class="reserved-message">Ya reservado por otra persona :P</div>`
-                    : `<button class="reserve-btn" onclick="if(confirm('¿Seguro que querés reservar este regalo?')) reserveGift(${gift.id})">Reservar</button>`;
-
-                div.innerHTML = `
-                    <div class="gift-image-container" onclick="viewGift('${gift.link}')">
-                        <img src="${img}" alt="${gift.name}" class="gift-image" onerror="this.src='placeholder_gift.jpg'">
+                card.innerHTML = `
+                    <div class="img-box">
+                        <img src="${img}" onerror="this.src='placeholder_gift.jpg'">
                     </div>
-                    <div class="gift-content">
-                        <div class="gift-name">${gift.name}</div>
-                        <div class="gift-buttons">
-                            <button class="view-btn" onclick="viewGift('${gift.link}')">Ver Producto</button>
-                            ${actionHTML}
-                        </div>
+                    <div class="content">
+                        <div class="name">${g.name}</div>
+                        ${g.reserved 
+                            ? '<div class="msg">Ya reservado por otra persona :(</div>'
+                            : '<button class="btn reserve" onclick="reserve(' + g.id + ')">Reservar</button>'
+                        }
                     </div>
                 `;
-                list.appendChild(div);
+                list.appendChild(card);
             });
         }
 
-        document.addEventListener('DOMContentLoaded', renderGifts);
+        async function reserve(id) {
+            if (!confirm("¿Querés reservar este regalo?")) return;
+
+            const res = await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reserved: true })
+            });
+
+            if (res.status === 409) {
+                alert("¡Ya lo reservaron! :P");
+            } else if (res.ok) {
+                alert("¡Reservado con éxito! ♡");
+            }
+            load();
+        }
+
+        load();
     </script>
 </body>
 </html>
