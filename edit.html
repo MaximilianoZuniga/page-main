@@ -6,140 +6,192 @@
     <title>Editar Regalos - Maribel birthday's</title>
     <style>
         :root {
-            --grinch-green: #018E40;
             --grinch-red: #8B011A;
-            --card-bg: rgba(255, 255, 255, 0.95);
+            --grinch-green: #018E40;
+            --card-bg: rgba(255, 255, 255, 0.96);
         }
         body {
-            font-family: sans-serif; margin: 0; padding: 20px; text-align: center;
-            background-image: url('blob_ynwy.jpg'); 
-            background-size: cover; background-attachment: fixed;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 20px;
+            background-image: url('blob_ynwy.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
         }
-        .container { max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        h1 { color: var(--grinch-red); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; }
-        th { background-color: var(--grinch-green); color: white; }
-        td button { margin: 2px; padding: 5px 10px; cursor: pointer; border: none; border-radius: 4px; }
-        .btn-delete { background-color: #dc3545; color: white; }
-        .btn-toggle { background-color: #ffc107; color: black; }
-        .reserved-status { font-weight: bold; }
-        .status-yes { color: var(--grinch-red); }
-        .status-no { color: var(--grinch-green); }
-        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: var(--grinch-red);
+            text-align: center;
+            font-size: 2.4em;
+            margin-bottom: 10px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--grinch-green);
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        th {
+            background: var(--grinch-green);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        td img {
+            max-width: 60px;
+            max-height: 60px;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+        .btn {
+            padding: 8px 12px;
+            margin: 0 4px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-toggle {
+            background: #ffc107;
+            color: black;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .reserved { color: var(--grinch-red); font-weight: bold; }
+        .available { color: var(--grinch-green); font-weight: bold; }
+
+        /* Responsivo para móviles */
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr { display: none; }
+            tr {
+                margin-bottom: 20px;
+                border: 1px solid #ddd;
+                border-radius: 12px;
+                padding: 15px;
+                background: #f9f9f9;
+            }
+            td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+                border: none;
+            }
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                font-weight: bold;
+                color: var(--grinch-green);
+            }
+            td:last-child { text-align: center; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Editar y Gestionar Regalos</h1>
-        <a href="admin.html" class="back-link">Volver a la administración</a>
-        <table>
+        <h1>Gestionar Regalos</h1>
+        <a href="admin.html" class="back-link">Volver al Panel Admin</a>
+
+        <table id="gifts-table">
             <thead>
                 <tr>
                     <th>Nombre</th>
                     <th>Imagen</th>
-                    <th>Link (URL)</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="gift-table-body">
-                <!-- Filas de regalos dinámicas -->
+                <!-- Cargando... -->
             </tbody>
         </table>
     </div>
 
     <script>
-        // *** Apunta a la URL de tu servidor Node.js ***
         const API_URL = 'https://page-main.onrender.com/api/gifts';
 
-        async function fetchGiftsFromServer() {
-            try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error('Network response was not ok');
-                return await response.json();
-            } catch (error) {
-                console.error("Error fetching gifts:", error);
-                alert("No se pudieron cargar los regalos desde el servidor.");
-                return [];
-            }
-        }
-
-        async function renderEditableList() {
-            const tableBody = document.getElementById('gift-table-body');
-            tableBody.innerHTML = '<tr><td colspan="5">Cargando datos...</td></tr>';
+        async function loadGifts() {
+            const tbody = document.getElementById('gift-table-body');
+            tbody.innerHTML = '<tr><td colspan="4">Cargando regalos...</td></tr>';
             
-            const gifts = await fetchGiftsFromServer();
-
-            tableBody.innerHTML = '';
-            gifts.forEach(gift => {
-                const row = document.createElement('tr');
-                const statusClass = gift.reserved ? 'status-yes' : 'status-no';
-                const statusText = gift.reserved ? 'Reservado' : 'Disponible';
-                const toggleButtonText = gift.reserved ? 'Habilitar' : 'Reservar';
-                const imageUrl = (gift.image && gift.image.trim() !== '') ? gift.image : 'placeholder_gift.jpg';
-
-                row.innerHTML = `
-                    <td>${gift.name}</td>
-                    <td><img src="${imageUrl}" style="width: 50px; height: auto;"></td>
-                    <td><a href="${gift.link}" target="_blank">Ver Enlace</a></td>
-                    <td class="reserved-status ${statusClass}">${statusText}</td>
-                    <td>
-                        <button class="btn-toggle" onclick="toggleReservedStatus(${gift.id})">${toggleButtonText}</button>
-                        <button class="btn-delete" onclick="deleteGift(${gift.id})">Eliminar</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Función toggleReservedStatus actualizada (PUT request)
-        async function toggleReservedStatus(giftId) {
-            const gifts = await fetchGiftsFromServer();
-            const gift = gifts.find(g => g.id === giftId);
-            const newState = !gift.reserved;
-
             try {
-                const response = await fetch(`${API_URL}/${giftId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ reserved: newState })
+                const res = await fetch(API_URL);
+                const gifts = await res.json();
+
+                tbody.innerHTML = '';
+                gifts.forEach(g => {
+                    const img = g.image?.trim() ? g.image : 'placeholder_gift.jpg';
+                    const status = g.reserved ? 'reserved' : 'available';
+                    const text = g.reserved ? 'Reservado' : 'Disponible';
+                    const btnText = g.reserved ? 'Desmarcar' : 'Marcar Reservado';
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td data-label="Nombre">${g.name}</td>
+                        <td data-label="Imagen"><img src="${img}" onerror="this.src='placeholder_gift.jpg'"></td>
+                        <td data-label="Estado" class="${status}">${text}</td>
+                        <td data-label="Acciones">
+                            <button class="btn btn-toggle" onclick="toggle(${g.id})">${btnText}</button>
+                            <button class="btn btn-delete" onclick="remove(${g.id})">Eliminar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
                 });
-
-                if (response.ok) {
-                    alert("Estado de reserva actualizado con éxito.");
-                    renderEditableList(); // Refrescar la tabla
-                } else {
-                    throw new Error('Server error');
-                }
-            } catch (error) {
-                console.error("Error updating status:", error);
-                alert("Hubo un problema al actualizar el estado del regalo.");
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="4">Error al cargar los regalos</td></tr>';
             }
         }
 
-        // Función deleteGift actualizada (DELETE request)
-        async function deleteGift(giftId) {
-            if (confirm("¿Seguro que quieres eliminar este regalo de la lista PERMANENTEMENTE?")) {
-                try {
-                    const response = await fetch(`${API_URL}/${giftId}`, {
-                        method: 'DELETE'
-                    });
+        async function toggle(id) {
+            const gifts = await (await fetch(API_URL)).json();
+            const gift = gifts.find(g => g.id === id);
+            await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reserved: !gift.reserved })
+            });
+            loadGifts();
+        }
 
-                    if (response.ok) {
-                        alert("Regalo eliminado con éxito.");
-                        renderEditableList(); // Refrescar la tabla
-                    } else {
-                        throw new Error('Server error');
-                    }
-                } catch (error) {
-                    console.error("Error deleting gift:", error);
-                    alert("Hubo un problema al eliminar el regalo.");
-                }
+        async function remove(id) {
+            if (confirm("¿Eliminar este regalo para siempre?")) {
+                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                loadGifts();
             }
         }
 
-        document.addEventListener('DOMContentLoaded', renderEditableList);
+        document.addEventListener('DOMContentLoaded', loadGifts);
     </script>
 </body>
 </html>

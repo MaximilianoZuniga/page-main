@@ -8,200 +8,205 @@
         :root {
             --grinch-green: #018E40;
             --grinch-red: #8B011A;
-            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
         }
         body {
-            font-family: sans-serif;
-            margin: 0; padding: 20px; text-align: center;
-            background-image: url('a.jpg'); 
-            background-size: cover; background-attachment: fixed;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-image: url('a.jpg');
+            background-size: cover;
+            background-attachment: fixed;
             color: #333;
+            min-height: 100vh;
         }
-        .container { max-width: 800px; margin: 0 auto; }
-        h1 { color: var(--grinch-red); font-size: 2.5em; background: var(--card-bg); padding: 10px; border-radius: 8px; }
-        .gift-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        
-        .gift-item { 
-            background: var(--card-bg); 
-            border-radius: 8px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
-            text-align: center; 
-            transition: transform 0.3s ease-in-out; 
-            display: flex; 
-            flex-direction: column; 
-            height: 100%;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: var(--grinch-red);
+            font-size: 2.8em;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        .gift-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            padding: 10px;
+        }
+        .gift-item {
+            background: var(--card-bg);
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
-        .gift-item:hover { transform: translateY(-5px); }
-        
+        .gift-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+        .reserved-item {
+            opacity: 0.85;
+            background: #ffcccb99 !important;
+        }
         .gift-image-container {
             width: 100%;
-            height: 150px;
+            height: 200px;
+            background: #f8f8f8;
+            padding: 10px;
+            cursor: pointer;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            background-color: #f0f0f0;
-            cursor: pointer;
         }
-
         .gift-image {
-            object-fit: contain; 
             max-width: 100%;
             max-height: 100%;
-            display: block;
+            object-fit: contain;
+            transition: transform 0.3s;
         }
-
+        .gift-image:hover {
+            transform: scale(1.08);
+        }
         .gift-content {
-            padding: 15px;
+            padding: 16px;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
         }
-        
-        .gift-name { 
-            font-weight: bold; color: var(--grinch-red); font-size: 1.1em; 
-            margin-bottom: 10px;
+        .gift-name {
+            font-weight: bold;
+            color: var(--grinch-red);
+            font-size: 1.25em;
+            margin-bottom: 12px;
             flex-grow: 1;
         }
         .gift-buttons {
             margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
-        .gift-buttons button { padding: 8px 12px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
-        .view-btn { background-color: #007bff; color: white; }
-        .reserve-btn { background-color: var(--grinch-green); color: white; }
-        
-        /* Nuevo estilo para el mensaje de reservado */
-        .reserved-message {
-            color: var(--grinch-red);
+        .gift-buttons button {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
             font-weight: bold;
-            padding: 8px 12px;
-            margin-top: 5px;
-            background-color: #ffe5e5; /* Fondo rojo claro para el mensaje */
-            border-radius: 4px;
-            text-decoration: line-through; /* Opcional: tachar el mensaje */
+            cursor: pointer;
+            transition: 0.3s;
         }
-        
-        /* Eliminamos pointer-events: none de reserved-item, solo dejamos el fondo */
-        .reserved-item { 
-            background-color: #ffcccb99; 
-            opacity: 0.9; 
-            /* Quitamos pointer-events: none para que el botón "Ver Producto" siga funcionando */
+        .view-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .view-btn:hover { background-color: #0056b3; }
+        .reserve-btn {
+            background-color: var(--grinch-green);
+            color: white;
+        }
+        .reserve-btn:hover { background-color: #00642d; }
+        .reserved-message {
+            background: #ffe5e5;
+            color: var(--grinch-red);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
         }
 
+        /* Responsivo extra para móviles */
+        @media (max-width: 480px) {
+            h1 { font-size: 2.2em; }
+            .gift-list { grid-template-columns: 1fr; }
+            .gift-image-container { height: 180px; }
+        }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>Maribel birthday's</h1>
-        <div class="gift-list" id="gift-list">
-            <!-- Los regalos se insertarán aquí dinámicamente -->
-        </div>
+        <div class="gift-list" id="gift-list"></div>
     </div>
 
     <script>
-        // *** Apunta a la URL de tu servidor Node.js ***
-        const API_URL = 'https://page-main.onrender.com/api/gifts'; 
+        const API_URL = 'https://page-main.onrender.com/api/gifts';
 
-        async function fetchGiftsFromServer() {
+        async function fetchGifts() {
             try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error('Network response was not ok');
-                return await response.json();
-            } catch (error) {
-                console.error("Error fetching gifts:", error);
-                alert("No se pudieron cargar los regalos desde el servidor.");
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error('Error del servidor');
+                return await res.json();
+            } catch (err) {
+                console.error(err);
+                alert("No se pudieron cargar los regalos.");
                 return [];
             }
         }
 
+        function viewGift(link) {
+            const url = link.startsWith('http') ? link : 'https://' + link;
+            window.open(url, '_blank').focus();
+        }
+
+        async function reserveGift(id) {
+            try {
+                const res = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reserved: true })
+                });
+
+                if (res.status === 409) {
+                    alert("¡Ups! Alguien más lo reservó justo ahora :P");
+                } else if (res.ok) {
+                    alert("¡Reservado con éxito! Gracias ♡");
+                }
+                renderGifts(); // refrescar
+            } catch (err) {
+                alert("Error de conexión. Inténtalo de nuevo.");
+                renderGifts();
+            }
+        }
+
         async function renderGifts() {
-            const listElement = document.getElementById('gift-list');
-            listElement.innerHTML = '';
-            const gifts = await fetchGiftsFromServer(); 
+            const list = document.getElementById('gift-list');
+            list.innerHTML = '<p>Cargando regalitos...</p>';
+            const gifts = await fetchGifts();
+            list.innerHTML = '';
 
             gifts.forEach(gift => {
-                const giftItem = document.createElement('div');
-                giftItem.classList.add('gift-item');
-                if (gift.reserved) {
-                    giftItem.classList.add('reserved-item');
-                }
+                const div = document.createElement('div');
+                div.className = 'gift-item' + (gift.reserved ? ' reserved-item' : '');
 
-                const encodedLink = encodeURIComponent(gift.link);
-                const imageUrl = (gift.image && gift.image.trim() !== '') ? gift.image : 'placeholder_gift.jpg';
+                const img = gift.image?.trim() ? gift.image : 'placeholder_gift.jpg';
 
-                // Lógica condicional para los botones/mensaje
-                let actionAreaHTML = '';
-                if (gift.reserved) {
-                    actionAreaHTML = `
-                        <div class="reserved-message">Regalo ya reservado por otra persona :P</div>
-                    `;
-                } else {
-                    actionAreaHTML = `
-                        <button class="reserve-btn" onclick="confirmReservation(${gift.id})">Reservar</button>
-                    `;
-                }
+                const actionHTML = gift.reserved
+                    ? `<div class="reserved-message">Ya reservado por otra persona :P</div>`
+                    : `<button class="reserve-btn" onclick="if(confirm('¿Seguro que querés reservar este regalo?')) reserveGift(${gift.id})">Reservar</button>`;
 
-                giftItem.innerHTML = `
-                    <div class="gift-image-container" onclick="viewGift('${encodedLink}')">
-                         <img src="${imageUrl}" alt="${gift.name}" class="gift-image">
+                div.innerHTML = `
+                    <div class="gift-image-container" onclick="viewGift('${gift.link}')">
+                        <img src="${img}" alt="${gift.name}" class="gift-image" onerror="this.src='placeholder_gift.jpg'">
                     </div>
                     <div class="gift-content">
                         <div class="gift-name">${gift.name}</div>
                         <div class="gift-buttons">
-                            <button class="view-btn" onclick="viewGift('${encodedLink}')">Ver Producto</button>
-                            <!-- Insertamos el HTML condicional aquí -->
-                            ${actionAreaHTML} 
+                            <button class="view-btn" onclick="viewGift('${gift.link}')">Ver Producto</button>
+                            ${actionHTML}
                         </div>
                     </div>
                 `;
-                listElement.appendChild(giftItem);
+                list.appendChild(div);
             });
-        }
-        
-        // ... (viewGift, confirmReservation, reserveGift functions remain the same as the last version) ...
-
-        function viewGift(encodedLink) {
-            const link = decodeURIComponent(encodedLink);
-            const fullURL = link.startsWith('http://') || link.startsWith('https://') ? link : `https://${link}`;
-            window.open(fullURL, '_blank').focus();
-        }
-
-        function confirmReservation(giftId) {
-            const isConfirmed = confirm("¿Estás seguro de que quieres reservar este regalo?");
-            if (isConfirmed) {
-                reserveGift(giftId);
-            }
-        }
-
-        async function reserveGift(giftId) {
-            try {
-                const response = await fetch(`${API_URL}/${giftId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ reserved: true }) 
-                });
-
-                if (response.status === 409) {
-                    // Si el backend dice que ya estaba reservado, muestra el mensaje
-                    alert("Regalo ya reservado por otra persona :P");
-                } else if (response.ok) {
-                    alert(`¡Gracias! Has reservado el regalo.`);
-                } else {
-                    throw new Error('Server error');
-                }
-                
-                // Vuelve a renderizar la lista para mostrar el cambio visualmente
-                renderGifts(); 
-
-            } catch (error) {
-                console.error("Error reserving gift:", error);
-                if (error.message !== "Failed to fetch") {
-                     alert("Hubo un problema al intentar reservar el regalo.");
-                }
-                renderGifts();
-            }
         }
 
         document.addEventListener('DOMContentLoaded', renderGifts);

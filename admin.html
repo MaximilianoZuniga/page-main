@@ -8,124 +8,177 @@
         :root {
             --grinch-red: #8B011A;
             --grinch-green: #018E40;
-            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
         body {
-            font-family: sans-serif;
-            margin: 0; padding: 20px; text-align: center;
-            background-image: url('desktop-wallpaper-dr-seuss-the-grinch-mr-grinch.jpg'); 
-            background-size: cover; background-attachment: fixed;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: url('desktop-wallpaper-dr-seuss-the-grinch-mr-grinch.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
             color: #333;
         }
-        .container { max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        h1, h3 { color: var(--grinch-red); }
-        input, button { padding: 10px; margin-top: 10px; width: 100%; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc; }
-        button { background-color: var(--grinch-green); color: white; border: none; cursor: pointer; transition: background-color 0.3s; }
-        button:hover { background-color: #00642d; }
-        .link-to-user { margin-top: 20px; display: block; color: var(--grinch-red); text-decoration: none; font-weight: bold; }
-        .scrape-btn { background-color: #f0ad4e; }
-        .scrape-btn:hover { background-color: #ec971f; }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+        h1 {
+            color: var(--grinch-red);
+            font-size: 2.4em;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        h3 {
+            color: var(--grinch-green);
+            text-align: center;
+            margin-top: 25px;
+            font-size: 1.4em;
+        }
+        input, button {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--grinch-green);
+            box-shadow: 0 0 0 3px rgba(1, 142, 64, 0.2);
+        }
+        button {
+            background: var(--grinch-green);
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background: #00642d; transform: translateY(-2px); }
+        .scrape-btn {
+            background: #f0ad4e;
+        }
+        .scrape-btn:hover { background: #e69500; }
+        .links {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .links a {
+            padding: 14px;
+            background: var(--grinch-red);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 10px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .links a:hover {
+            background: #6b0015;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 20px; }
+            h1 { font-size: 2em; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Admin: Maribel birthday's</h1>
+        <h1>Admin - Maribel birthday's</h1>
         <h3>Añadir Nuevo Regalo</h3>
+        
         <input type="text" id="new-gift-name" placeholder="Nombre del regalo">
-        <input type="url" id="new-gift-link" placeholder="Link del regalo (URL del producto)">
+        <input type="url" id="new-gift-link" placeholder="Link del producto (Amazon, Mercado Libre, etc.)">
         
-        <button onclick="fetchImageFromLink()" class="scrape-btn">Obtener Imagen Automáticamente (Scraping)</button>
-        <input type="url" id="new-gift-image" placeholder="Link de la imagen (URL miniatura)" disabled>
-
+        <button onclick="fetchImageFromLink()" class="scrape-btn">
+            Obtener Imagen Automática
+        </button>
+        
+        <input type="url" id="new-gift-image" placeholder="URL de la imagen (se llena sola o pégala)" disabled>
+        
         <button onclick="addGift()">Añadir Regalo</button>
-        <a href="user.html" class="link-to-user">Ver lista pública de regalos</a>
-        <a href="edit.html" class="link-to-user">**Gestionar y Editar Regalos**</a>
 
-        <!-- Se eliminó la funcionalidad de JSON local/localStorage -->
-        
+        <div class="links">
+            <a href="user.html">Ver Lista Pública</a>
+            <a href="edit.html">Gestionar y Editar Regalos</a>
+        </div>
     </div>
 
     <script>
-        // *** Apunta a la URL de tu servidor Node.js ***
-        const API_URL = 'https://page-main.onrender.com/api/gifts'; 
+        const API_URL = 'https://page-main.onrender.com/api/gifts';
 
-        // Función de Scraping (igual que antes, usa proxy público)
         async function fetchImageFromLink() {
-            const productLink = document.getElementById('new-gift-link').value.trim();
-            if (!productLink) {
-                alert("Por favor, introduce el link del regalo primero.");
-                return;
-            }
+            const link = document.getElementById('new-gift-link').value.trim();
+            if (!link) return alert("Primero poné el link del producto");
 
-            const proxy = 'api.allorigins.win';
-            const targetUrl = encodeURIComponent(productLink);
-            const fullUrl = proxy + targetUrl;
-
+            const proxy = 'https://api.allorigins.win/get?url=';
             try {
-                const response = await fetch(fullUrl);
-                const data = await response.json();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(data.contents, 'text/html');
+                const res = await fetch(proxy + encodeURIComponent(link));
+                const data = await res.json();
+                const doc = new DOMParser().parseFromString(data.contents, 'text/html');
+                let img = doc.querySelector('meta[property="og:image"]')?.content ||
+                          doc.querySelector('meta[name="og:image"]')?.content ||
+                          doc.querySelector('img')?.src;
 
-                let imageUrl = '';
-                const ogImage = doc.querySelector('meta');
-                if (ogImage && ogImage.content) {
-                    imageUrl = ogImage.content;
-                }
-
-                if (imageUrl) {
-                    document.getElementById('new-gift-image').value = imageUrl;
-                    alert("Imagen encontrada automáticamente.");
-                    document.getElementById('new-gift-image').disabled = false; // Habilita para permitir ajustes
+                if (img) {
+                    if (img.startsWith('//')) img = 'https:' + img;
+                    if (img.startsWith('/')) img = new URL(img, link).href;
+                    
+                    document.getElementById('new-gift-image').value = img;
+                    document.getElementById('new-gift-image').disabled = false;
+                    alert("¡Imagen encontrada!");
                 } else {
-                    alert("No se pudo encontrar la imagen automáticamente. Pégala manualmente.");
+                    alert("No se encontró imagen automática. Pegala manualmente.");
                     document.getElementById('new-gift-image').disabled = false;
                 }
-
-            } catch (error) {
-                console.error("Error fetching the product link:", error);
-                alert("Error de red o CORS al intentar obtener la imagen. Habilita el campo y pégala manualmente.");
+            } catch (e) {
+                alert("Error de red. Pegá la imagen manualmente.");
                 document.getElementById('new-gift-image').disabled = false;
             }
         }
 
-
-        // Función para añadir regalo (POST al servidor)
         async function addGift() {
             const name = document.getElementById('new-gift-name').value.trim();
             const link = document.getElementById('new-gift-link').value.trim();
             const image = document.getElementById('new-gift-image').value.trim();
-            
-            if (name && link) {
-                const newGift = { 
-                    id: Date.now(),
-                    name, 
-                    link, 
-                    image, 
-                    reserved: false 
-                };
-                
-                try {
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(newGift)
-                    });
 
-                    if (response.ok) {
-                        alert(`"${name}" añadido al servidor.`);
-                        document.getElementById('new-gift-name').value = '';
-                        document.getElementById('new-gift-link').value = '';
-                        document.getElementById('new-gift-image').value = ''; 
-                        document.getElementById('new-gift-image').disabled = true;
-                    } else {
-                        throw new Error('Server error');
-                    }
-                } catch (error) {
-                    console.error("Error adding gift:", error);
-                    alert("Hubo un problema al añadir el regalo al servidor. ¿Está el backend corriendo?");
+            if (!name || !link) return alert("Nombre y link son obligatorios");
+
+            const newGift = {
+                id: Date.now(),
+                name,
+                link,
+                image: image || '',
+                reserved: false
+            };
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newGift)
+                });
+                if (res.ok) {
+                    alert(`"${name}" añadido con éxito`);
+                    document.querySelectorAll('input').forEach(i => i.value = '');
+                    document.getElementById('new-gift-image').disabled = true;
                 }
-            } else { alert("Completa los campos obligatorios."); }
+            } catch (e) {
+                alert("Error al guardar en el servidor");
+            }
         }
     </script>
 </body>
